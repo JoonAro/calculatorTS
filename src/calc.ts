@@ -1,9 +1,4 @@
-/* clearDisplay()
-inputNumber(number)
-calculateResult()
-inputOperator(operator) */
 const display = (document.getElementById('display') as HTMLInputElement);
-//let value: HTMLInputElement = display.value;
 if (!display) {
     throw new Error('Could not find display element');
 }
@@ -11,39 +6,41 @@ const buttons = document.querySelectorAll('button');
 let value1: string;
 let value2: string;
 let oper: string;
-/**
- * The current input value as a string.
+let result: number | string = '';
+/*
+ The pushed number buttons value as a string.
+ If there was an error on the display and you push a number button it will clear the error and update the display with your number
  */
 const inputNumber = (numb: string) => {
+    if (Number.isNaN(parseInt(display.value)) === true) {
+        return clearDisplay(numb);
+    }
     populateDisplay(numb);
 }
-
 /**
- * The previous input value as a string.
+ * Updates the display element with the current input value.
  */
-
+const populateDisplay = (num: string): string => {
+    if (display.value === '0') return display.value = num;
+    return display.value += num;
+}
 /**
  * The current operation symbol (+, -, *, /) or null if none.
+ * Takes the value 
  */
 const inputOperator = (operator?: string): void => {
     value2 = value1;
-    console.log(value1);
     value1 = display.value;
     if (operator !== undefined) {
-
         oper = operator;
         display.value = '0';
     }
-    console.log(oper);
-    console.log(value2);
-
 }
 
 /**
  * Calculates the result of the current operation and updates the current input value.
- * If the previous or current input values are not valid numbers, or the operation is null, does nothing.
+ * If the previous or current input values are not valid numbers does nothing.
  */
-let result: number | string = '';
 const calculateResult = () => {
     value2 = value1;
     value1 = display.value;
@@ -53,16 +50,11 @@ const calculateResult = () => {
     }
     const firstVal = parseInt(value2);
     const secVal = parseInt(value1);
-    if (result.toString() == display.value) {
+    if (result == display.value) {
         display.value = '';
         return populateDisplay("Error, Choose operator first");
     }
-    else if (display.value === "Error, Choose operator first") {
-        return clearDisplay();
-    }
-
     switch (oper) {
-
         case "/": result = firstVal / secVal;
             break;
         case "*": result = firstVal * secVal;
@@ -76,47 +68,19 @@ const calculateResult = () => {
     value1 = result.toString();
     display.value = value1;
     value2 = '';
-
-}
-
-
-
+};
 /**
- * Appends a number to the current input value and updates the display.
- * @param num - The number to append.
+ * Clears the current and previous input values and the operation and updates the display. Also updates the display if numb is passed to the function
  */
-
-
-/**
- * Sets the current operation and moves the current input value to the previous input value.
- * If there is already a previous input value, calculates the result first.
- * @param op - The operation symbol to set.
- */
-
-
-/**
- * Clears the current and previous input values and the operation and updates the display.
- */
-
-const clearDisplay = (): void => {
+const clearDisplay = (numb?: string): void => {
     value1 = '';
     value2 = '';
     display.value = '0';
     result = '';
+    if (numb) {
+        display.value = numb;
+    }
 }
-
-
-/**
- * Updates the display element with the current input value.
- */
-const populateDisplay = (num: string) => {
-    console.log(num);
-    if (display.value === '0') return display.value = num;
-    display.value += num;
-}
-
-// Initialize the display with the current input value.
-
 
 buttons.forEach(button => {
     button.addEventListener('click', (val) => {
